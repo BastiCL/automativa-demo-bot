@@ -1,0 +1,31 @@
+{
+  "name": "test-bot",
+  "version": "1.0.0",
+  "description": "Automativa test bot",
+  "main": "index.js",
+  "repository": "https://github.com/BastiCL/banco_chile-personas-mi_pass-add_recipients",
+  "author": "Bastián Cortez Díaz - Automativa",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "bundle": "git archive -v -o app.zip --format=zip HEAD",
+    "lint": "eslint *.js",
+    "localdev": "DEBUG=bot* yarn run start",
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "axios": "0.27.2",
+    "cheerio": "1.0.0-rc.12",
+    "debug": "4.3.4",
+    "dotenv": "16.0.1",
+    "lodash": "4.17.21",
+    "puppeteer": "15.5.0",
+    "puppeteer-core": "15.5.0",
+    "rutjs": "0.1.1"
+  },
+  "devDependencies": {
+    "eslint": "8.15.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.26.0"
+  }
+}
