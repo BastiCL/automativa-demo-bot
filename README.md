@@ -10,7 +10,7 @@
 * Leer documentación oficial (https://pptr.dev/)
 * Instalar GitHub Desktop (https://mac.github.com) o git cli
 
-# Running
+# Ejecución
 
 * Actualizar dependencias (`yarn`)
 * Agregar variables de entorno (.env) en base proyecto
