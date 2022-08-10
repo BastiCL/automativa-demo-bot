@@ -1,4 +1,5 @@
 const debug = require('debug')('bot-login');
+const path = require('path');
 const puppeteer = require('puppeteer');
 
 /**
@@ -10,7 +11,7 @@ module.exports = async (url, rut, pass) => {
   const browser = await puppeteer.launch({ headless: true });
   const [page] = await browser.pages();
   page.setDefaultTimeout(20000);
-  page.setDefaultNavigationTimeout(20000);
+  page.setDefaultNavigationTimeout(30000);
 
   const delay = (ms) => new Promise((resolve) => setTimeout(() => resolve(), ms));
   const waitForNav = () => page.waitForNavigation({
@@ -20,10 +21,10 @@ module.exports = async (url, rut, pass) => {
   return new Promise((resolve, reject) => {
     page.goto(url)
       .then(() => page.on('popup', () => {
-        reject(new Error('Alert message in browser'));
+        reject(new Error('Alert message in browser')); // Handle this with controlled retry
       }))
       .then(() => page.on('dialog', () => {
-        reject(new Error('Alert message in browser'));
+        reject(new Error('Alert message in browser')); // Handle this with controlled retry
       }))
       .then(() => debug('Ingresa SSI'))
       .then(() => page.$x('//*[@id="sinAutenticacion"]/li/a'))
@@ -56,7 +57,7 @@ module.exports = async (url, rut, pass) => {
       .then(([btn]) => btn.click())
       .then(waitForNav)
       .then(() => debug('Ingresa emisor boletas honorarios'))
-      .then(() => page.$x('//*[@id="my-wrapper"]/div[3]/div/div/div[2]/p[3]/a'))
+      .then(() => page.$x('//*[@id="my-wrapper"]/div[*]/div/div/div[2]/p[3]/a'))
       .then(([btn]) => btn.click())
       .then(waitForNav)
       .then(() => Promise.allSettled([page.waitForXPath('//*[@id="modalInforma"]/div/div/div[3]/button', { timeout: 10000 })]))
@@ -71,6 +72,7 @@ module.exports = async (url, rut, pass) => {
       .then(() => page.$x('//*[@id="headingOne"]/h4/a'))
       .then(([btn]) => btn.click())
       .then(() => debug('Emitir boletas honorarios'))
+      .then(() => delay(2000))
       .then(() => page.$x('//*[@id="collapseOne"]/div/div/ul/li[2]/a'))
       .then(([btn]) => btn.click())
       .then(() => debug('Emitir por contribuyente con datos usados anteriormente'))
@@ -84,7 +86,7 @@ module.exports = async (url, rut, pass) => {
       .then(() => resolve('Loggueado'))
       .catch((error) => {
         page.screenshot({
-          path: `src/screenshots/exception_${(new Date()).toISOString()}.jpg`,
+          path: `${path.resolve('src/screenshots/')}/exception_${Date.now()}.jpg`,
           type: 'jpeg',
           fullPage: true,
         })
